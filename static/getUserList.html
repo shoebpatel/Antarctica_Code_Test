@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+		integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+	</script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+		integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+	</script>
+
+	<style>
+		.err {
+			display: inline;
+			margin-left: 18%;
+			margin-top: -11%;
+			position: absolute;
+			font-style: italic;
+			font-size: 18px;
+			color: red;
+		}
+
+		.container {
+			border: 1px solid rgba(0, 0, 0, .11);
+			padding: 10px;
+			margin-top: 5%;
+		}
+
+		.controls-item {
+			display: inline-block;
+		}
+
+		.btn {
+			margin: 1px;
+		}
+
+		.form-control,
+		.mb-3 {
+			width: auto;
+			display: inline;
+		}
+	</style>
+
+	<title>Document</title>
+</head>
+
+<body>
+	<p id='invalid' class='err' style="display: inline;"></p>
+	<p id='notFound' class='err' style="display: inline;"></p>
+	<div style="position: absolute; margin-left: 11%; margin-top: -8%;">
+		<div>
+			<div class="mb-3">
+				<input type="text" class="form-control" autocomplete="off" id="searchByFN"
+					placeholder="Enter First Name">
+			</div>
+			<div class="mb-3">
+				<input type="text" class="form-control" autocomplete="off" id="searchByLN"
+					placeholder="Enter Last Name">
+			</div>
+			<div class="mb-3">
+				<input type="text" class="form-control" autocomplete="off" id="searchByEID"
+					placeholder="Enter EmployeeID">
+			</div>
+			<button type="submit" class="btn btn-primary" onclick="searchBy()">Search By</button>
+		</div>
+
+		<!-- <a class="nav-link" href="login.html" style="margin-top: -2%;position: absolute;margin-left: 87%;">Logout</a> -->
+		<div style="margin-top: 2%;">
+			<div class="btn-group">
+				<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false" id='button1'>
+					Sort By
+				</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="#" id='employeeID' onclick="sortBy(this.id)">EmployeeID</a>
+					<a class="dropdown-item" href="#" id='firstName' onclick="sortBy(this.id)">First Name</a>
+					<a class="dropdown-item" href="#" id='lastName' onclick="sortBy(this.id)">Last Name</a>
+					<a class="dropdown-item" href="#" id='email' onclick="sortBy(this.id)">Email</a>
+					<a class="dropdown-item" href="#" id='organizationName' onclick="sortBy(this.id)">Organization
+						Name</a>
+				</div>
+			</div>
+
+			<div class="btn-group">
+				<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"
+					aria-haspopup="true" aria-expanded="false" id='button2'>
+					Order
+				</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="#" id='ascending' onclick="sortBy(null,this.id)">Asc</a>
+					<a class="dropdown-item" href="#" id='descending' onclick="sortBy(null,this.id)">Desc</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div style=" margin-top: 12%;">
+		<div class="container ">
+			<table class="table" id="our-table">
+				<thead>
+					<tr>
+						<th id='employeeID'>EmployeeID</th>
+						<th id='firstName'>First Name</th>
+						<th id='lastName'>Last Name</th>
+						<th id='email'>Email ID</th>
+						<th id='organizationName'>Organization Name</th>
+					</tr>
+				</thead>
+
+				<tbody id="table-body">
+
+				</tbody>
+			</table>
+		</div>
+
+		<div class="container ">
+			Page No: <p id='pageNo' style="display: inline;">1</p>
+			<div id="pagination-wrapper"></div>
+		</div>
+	</div>
+
+	<script>
+		let state = {
+			'page': 1,
+			'rows': 5,
+			'window': 5,
+		}
+
+		buildTable()
+
+		async function searchBy() {
+			$('#table-body').empty()
+			let table = $('#table-body')
+			const firstName = document.getElementById('searchByFN').value;
+			const lastName = document.getElementById('searchByLN').value;
+			const employeeID = document.getElementById('searchByEID').value;
+			const search = {};
+
+			if (firstName) {
+				search.firstName = firstName;
+			}
+			if (lastName) {
+				search.lastName = lastName;
+			}
+			if (employeeID) {
+				search.employeeID = employeeID;
+			}
+
+			if (!firstName && !lastName && !employeeID) {
+				document.getElementById('invalid').innerHTML = 'Please Enter First Name or Last Name or EmployeeID!'
+				return
+			}
+
+			let response = await fetch('/api/searchByUser', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': localStorage.getItem('token')
+					},
+					body: JSON.stringify(search)
+				})
+				.then(result => result.json())
+				.catch(err => {
+					console.log('Error:: ', err);
+				})
+
+				console.log('response101010: ', response);
+
+				if (response.status === 'success') {
+					document.getElementById('invalid').innerHTML = '';
+					let myList = response.results;
+					console.log('myList: ', myList);
+
+					if(myList.length === 0) {
+						document.getElementById('invalid').innerHTML = 'User not found';
+					}
+
+					for (var i = 1 in myList) {
+					let row = `<tr>
+                <td>${myList[i].employeeID}</td>
+                <td>${myList[i].firstName}</td>
+                <td>${myList[i].lastName}</td>
+                <td>${myList[i].email}</td>
+                <td>${myList[i].organizationName}</td>`
+					table.append(row)
+					}
+				} else {
+				console.log(response.error);
+				alert(response.error);
+			}
+		}
+
+		function sortBy(sortId, orderId) {
+			console.log('sortId: ', sortId);
+			console.log('orderId: ', orderId);
+
+			if (sortId) {
+				document.getElementById('button1').innerHTML = document.getElementById(sortId).innerText;
+				state.sortBy = sortId;
+			}
+			if (orderId) {
+				document.getElementById('button2').innerHTML = document.getElementById(orderId).innerText;
+				state.orderBy = orderId;
+			}
+			$('#table-body').empty()
+			buildTable()
+		}
+
+		function pageButtons(pages) {
+			let wrapper = document.getElementById('pagination-wrapper')
+
+			wrapper.innerHTML = ``
+			console.log('Pages:', pages)
+
+			let maxLeft = (state.page - Math.floor(state.window / 2))
+			let maxRight = (state.page + Math.floor(state.window / 2))
+
+			if (maxLeft < 1) {
+				maxLeft = 1
+				maxRight = state.window
+			}
+
+			if (maxRight > pages) {
+				maxLeft = pages - (state.window - 1)
+
+				if (maxLeft < 1) {
+					maxLeft = 1
+				}
+				maxRight = pages
+			}
+
+
+
+			for (let page = maxLeft; page <= maxRight; page++) {
+				wrapper.innerHTML += `<button value=${page} class="page btn btn-sm btn-info">${page}</button>`
+			}
+
+			if (state.page != 1) {
+				wrapper.innerHTML = `<button value=${1} class="page btn btn-sm btn-info">&#171; First</button>` + wrapper
+					.innerHTML
+			}
+
+			if (state.page != pages) {
+				wrapper.innerHTML += `<button value=${pages} class="page btn btn-sm btn-info">Last &#187;</button>`
+			}
+
+			$('.page').on('click', function () {
+				$('#table-body').empty()
+				state.page = Number($(this).val())
+				document.getElementById('pageNo').innerHTML = state.page
+				buildTable()
+			})
+
+		}
+
+		async function buildTable() {
+			let table = $('#table-body')
+
+			let body = {
+				page: state.page,
+				limit: 5
+			}
+
+			if (state && state.sortBy) {
+				body.sortBy = state.sortBy;
+			}
+
+			if (state && state.orderBy) {
+				body.orderBy = state.orderBy;
+			}
+
+			const response = await fetch('api/getUserList', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': localStorage.getItem('token')
+					},
+					body: JSON.stringify(body)
+				})
+				.then(result => result.json())
+				.catch(err => {
+					console.log('Error:: ', err);
+				})
+
+			if (response.status === 'success') {
+				document.getElementById('invalid').innerHTML = '';
+				const result = response.results;
+				let myList = result.results;
+				let pages = result.totalPages;
+
+				for (var i = 1 in myList) {
+					let row = `<tr>
+                <td>${myList[i].employeeID}</td>
+                <td>${myList[i].firstName}</td>
+                <td>${myList[i].lastName}</td>
+                <td>${myList[i].email}</td>
+                <td>${myList[i].organizationName}</td>`
+
+					table.append(row)
+				}
+				pageButtons(pages)
+			} else {
+				console.log(response.error);
+				alert(response.error);
+			}
+		}
+	</script>
+</body>
+
+</html>

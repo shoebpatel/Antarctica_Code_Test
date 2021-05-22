@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+	<title>Login</title>
+	<style>
+		.err {
+			display: inline;
+			margin-left: 46%;
+			margin-top: -3%;
+			position: absolute;
+			font-style: italic;
+			font-size: 18px;
+			color: red;
+		}
+	</style>
+</head>
+
+<body>
+	<p id='invalid' class='err' style="display: inline;"></p>
+	<form id="login" style="margin-left: 30%; margin-right: 30%; margin-top: 10%;">
+		<div class="mb-3">
+			<label for="exampleInputEmail1" class="form-label">Email address</label>
+			<input type="email" class="form-control" autocomplete="off" id="email" aria-describedby="Email" 
+				 placeholder="Enter Email" required>
+		</div>
+
+		<div class="mb-3">
+			<label for="exampleInputPassword1" class="form-label">Password</label>
+			<input type="password" class="form-control" autocomplete="off" id="password" aria-describedby="Password" 
+			placeholder="Enter Password"  required>
+		</div>
+
+		<button type="submit" class="btn btn-primary">Login</button> <a type="submit" class="btn btn-secondary" href="index.html"
+			style="display:inline;">Registration</a>
+	</form>
+
+	<script>
+		const form = document.getElementById('login')
+		form.addEventListener('submit', login)
+
+		async function login(event) {
+			event.preventDefault()
+
+			const body = {
+				email: document.getElementById('email').value,
+				password: document.getElementById('password').value
+			}
+
+			const result = await fetch('/api/login', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(body)
+			}).then((res) => {
+				console.log('res: ', res);
+				return res.json()
+			}).catch(err => {
+				console.log('Error:: ', err);
+			})
+
+			if (result.status === 'success') {
+				console.log('Got the token: ', result.data);
+				localStorage.setItem('token', result.data);
+				window.location.href = './getUserList.html';
+				// alert('Successfully Login...');
+			} else {
+				// alert(result.error);
+				document.getElementById('invalid').innerHTML = result.error;
+			}
+		}
+	</script>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
+	</script>
+</body>
+
+</html>
