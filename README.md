@@ -30,5 +30,6 @@ used Joi validator to validate incoming data
 
 used JWT for Authentication
 
+deployed on heroku with auto deploy from git hub using web hook
 
 

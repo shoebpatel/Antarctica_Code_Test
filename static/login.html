@@ -67,7 +67,7 @@
 			if (result.status === 'success') {
 				console.log('Got the token: ', result.data);
 				localStorage.setItem('token', result.data);
-				window.location.href = './getUserList.html';
+				window.location.href = '../private/getUserList.html';
 				// alert('Successfully Login...');
 			} else {
 				// alert(result.error);

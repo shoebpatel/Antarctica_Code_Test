@@ -44,24 +44,20 @@ module.exports = async (req, res) => {
 	}
 
 	let whereObj = {};
-
+	
 	if (firstName) {
-		whereObj = {
-			firstName: firstName
-		};
+		whereObj.firstName = firstName;
 	}
-
+	
 	if (lastName) {
-		whereObj = {
-			lastName: lastName
-		};
+		whereObj.lastName = lastName;
+	}
+	
+	if (employeeID) {
+		whereObj.employeeID = employeeID;
 	}
 
-	if (employeeID) {
-		whereObj = {
-			employeeID: employeeID
-		};
-	}
+	// console.log('whereObj: ', whereObj);
 
 	const user = await Employee.find(whereObj).populate('userID').lean()
 

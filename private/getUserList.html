@@ -140,11 +140,13 @@
 		buildTable()
 
 		async function searchBy() {
-			$('#table-body').empty()
 			let table = $('#table-body')
 			const firstName = document.getElementById('searchByFN').value;
+			// console.log('firstName: ', firstName);
 			const lastName = document.getElementById('searchByLN').value;
+			// console.log('lastName: ', lastName);
 			const employeeID = document.getElementById('searchByEID').value;
+			// console.log('employeeID: ', employeeID);
 			const search = {};
 
 			if (firstName) {
@@ -162,7 +164,7 @@
 				return
 			}
 
-			let response = await fetch('/api/searchByUser', {
+			let response = await fetch('/private/api/searchByUser', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -170,7 +172,14 @@
 					},
 					body: JSON.stringify(search)
 				})
-				.then(result => result.json())
+				.then(result => {
+					// console.log('result: ', result);
+					if(result.redirected) {
+						window.location.href = result.url;
+					}
+
+					return result.json()
+				})
 				.catch(err => {
 					console.log('Error:: ', err);
 				})
@@ -178,9 +187,10 @@
 				console.log('response101010: ', response);
 
 				if (response.status === 'success') {
+					$('#table-body').empty();
 					document.getElementById('invalid').innerHTML = '';
 					let myList = response.results;
-					console.log('myList: ', myList);
+					// console.log('myList: ', myList);
 
 					if(myList.length === 0) {
 						document.getElementById('invalid').innerHTML = 'User not found';
@@ -202,8 +212,8 @@
 		}
 
 		function sortBy(sortId, orderId) {
-			console.log('sortId: ', sortId);
-			console.log('orderId: ', orderId);
+			// console.log('sortId: ', sortId);
+			// console.log('orderId: ', orderId);
 
 			if (sortId) {
 				document.getElementById('button1').innerHTML = document.getElementById(sortId).innerText;
@@ -265,6 +275,7 @@
 		}
 
 		async function buildTable() {
+			console.log('buildTable');
 			let table = $('#table-body')
 
 			let body = {
@@ -288,7 +299,14 @@
 					},
 					body: JSON.stringify(body)
 				})
-				.then(result => result.json())
+				.then(result => {
+					// console.log('result: ', result);
+					if(result.redirected) {
+						window.location.href = result.url;
+					}
+
+					return result.json()
+				})
 				.catch(err => {
 					console.log('Error:: ', err);
 				})
