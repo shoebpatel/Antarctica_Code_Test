@@ -21,14 +21,16 @@ const {
 
 const port = process.env.NODE_ENV || PORT;
 
-
-mongoose.connect('mongodb+srv://shoeb:shoeb@cluster0.dqzaz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	useCreateIndex: true,
-	autoIndex: true,
-});
-
+try {
+	mongoose.connect('mongodb+srv://shoeb:shoeb@cluster0.dqzaz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+		useCreateIndex: true,
+		autoIndex: true,
+	});
+} catch (err) {
+	console.log("err:3232:", err);
+}
 app.use('/', express.static(path.join(__dirname, 'static')));
 app.use(express.json());
 
