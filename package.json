@@ -14,5 +14,5 @@
     "mongoose": "^5.12.10",
     "underscore": "^1.13.1"
   },
-  "license": "MIT",
+  "license": "MIT"
 }
