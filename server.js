@@ -19,7 +19,7 @@ const {
 	PORT
 } = require('./constants.json');
 
-const port = process.env.NODE_ENV || PORT;
+const port = process.env.PORT || PORT;
 
 try {
 	mongoose.connect('mongodb+srv://shoeb:shoeb@cluster0.dqzaz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
