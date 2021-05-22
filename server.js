@@ -31,6 +31,7 @@ try {
 } catch (err) {
 	console.log("err:3232:", err);
 }
+
 app.use('/', express.static(path.join(__dirname, 'static')));
 app.use(express.json());
 
