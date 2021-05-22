@@ -50,6 +50,7 @@ function authorization() {
 		}
 		try {
 			const user = jwt.verify(token, JWT_SECRET);
+			req.user = user;
 			console.log('user: ', user);
 		} catch (error) {
 			console.log('Error:: ', error)
