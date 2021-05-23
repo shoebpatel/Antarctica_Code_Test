@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+	<title>GetUserList</title>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +58,6 @@
 
 <body>
 	<p id='invalid' class='err' style="display: inline;"></p>
-	<p id='notFound' class='err' style="display: inline;"></p>
 	<div style="position: absolute; margin-left: 11%; margin-top: -8%;">
 		<div>
 			<div class="mb-3">
@@ -193,7 +193,7 @@
 					// console.log('myList: ', myList);
 
 					if(myList.length === 0) {
-						document.getElementById('invalid').innerHTML = 'User not found';
+						document.getElementById('invalid').innerHTML = 'User not found(This search box is case sensitive!)';
 					}
 
 					for (var i = 1 in myList) {
@@ -313,6 +313,9 @@
 
 			if (response.status === 'success') {
 				document.getElementById('invalid').innerHTML = '';
+				document.getElementById('searchByFN').value = '';
+				document.getElementById('searchByLN').value = '';
+				document.getElementById('searchByEID').value = '';
 				const result = response.results;
 				let myList = result.results;
 				let pages = result.totalPages;

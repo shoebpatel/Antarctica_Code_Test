@@ -1,6 +1,8 @@
 module.exports = async (req, res) => {
 	console.log('Incoming Request getUserList');
-	const { Employee
+	const {
+		Employee,
+		User
 	} = require('../model/schema');
 	const {
 		page,
@@ -66,6 +68,7 @@ module.exports = async (req, res) => {
 
 	// * Query MongoDb for Pagination & Sorting 
 	try {
+		let userList = null;
 		if (sortBy) {
 			field = sortBy;
 		}
@@ -73,25 +76,46 @@ module.exports = async (req, res) => {
 			criteria = orderBy;
 		}
 
-		const userList = await Employee.find().populate('userID').sort({
-			[field]: criteria
-		}).limit(limit).skip(startIndex).exec();
-		// console.log('userList: ', userList);
+		if (sortBy === 'email') {
+			userList = await User.find().populate('employeeID').sort({
+				'email': criteria
+			}).limit(limit).skip(startIndex).exec();
+			console.log('userList: ', userList);
 
+			results.results = userList.map(val => {
+				if (val) {
+					let createObj = {
+						email: val.email,
+						firstName: (val.employeeID && val.employeeID.firstName) ? val.employeeID.firstName : null,
+						lastName: (val.employeeID && val.employeeID.lastName) ? val.employeeID.lastName : null,
+						employeeID: (val.employeeID && val.employeeID.employeeID) ? val.employeeID.employeeID : null,
+						organizationName: (val.employeeID && val.employeeID.organizationName) ? val.employeeID.organizationName : null,
+					}
+					return createObj;
+				}
+			});
+		} else {
+			userList = await Employee.find().populate('userID').sort({
+				[field]: criteria
+			}).limit(limit).skip(startIndex).exec();
+			console.log('userList: ', userList);
+
+			results.results = userList.map(val => {
+				let createObj = {
+					firstName: val.firstName,
+					lastName: val.lastName,
+					employeeID: val.employeeID,
+					organizationName: val.organizationName,
+					email: val.userID && val.userID.email ? val.userID.email : null
+				}
+				return createObj;
+			})
+		}
+		
 		results.totalPages = Math.round(totalPages / limit);
-
-		results.results = userList.map(val => {
-			let createObj = {
-				firstName: val.firstName,
-				lastName: val.lastName,
-				employeeID: val.employeeID,
-				organizationName: val.organizationName,
-				email: val.userID && val.userID.email ? val.userID.email : null
-			}
-			return createObj;
-		})
-		// console.log('results: ', results);
-
+		
+		console.log('results: ', results);
+		
 		return res.json({
 			results,
 			status: 'success'

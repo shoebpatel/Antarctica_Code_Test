@@ -1,9 +1,9 @@
 module.exports = async (req, res) => {
-    console.log('Incoming Request::');
-    const {
-        User,
-        Employee
-    } = require('../model/schema');
+	console.log('Incoming Request::');
+	const {
+		User,
+		Employee
+	} = require('../model/schema');
 
 	const {
 		firstName,
@@ -79,26 +79,29 @@ module.exports = async (req, res) => {
 		});
 		console.log('createUser: ', createUser);
 
-		if (!createUser || (createUser && !createUser[0]) || (createUser && createUser[0] && _.isEmpty(createUser[0]._id))) {
-			return res.json({
-				status: 'error',
-				error: 'Something went wrong'
-			}).status(500)
-		}
-
 		const registerEmployee = await Employee.create([{
 			firstName,
 			lastName,
 			employeeID,
 			organizationName,
-			userID: createUser[0]._id
+			userID: (createUser && createUser[0] && createUser[0]._id) ? createUser[0]._id : null
 		}], {
 			session
 		});
 		console.log('registerEmployee: ', registerEmployee);
 
+		const eID = (registerEmployee && registerEmployee[0] && registerEmployee[0]._id) ? registerEmployee[0]._id : null;
+
 		await session.commitTransaction();
 		session.endSession();
+
+		await User.findByIdAndUpdate(createUser[0]._id, {
+			"employeeID": eID
+		});
+
+		res.json({
+			status: 'success'
+		}).status(200)
 	} catch (error) {
 		console.log('error102: ', JSON.stringify(error));
 
@@ -125,7 +128,4 @@ module.exports = async (req, res) => {
 			error: 'Something went wrong'
 		}).status(500)
 	}
-	res.json({
-		status: 'success'
-	}).status(200)
 }

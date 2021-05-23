@@ -28,6 +28,7 @@ try {
 		useCreateIndex: true,
 		autoIndex: true,
 	});
+	mongoose.set('useFindAndModify', false);
 } catch (err) {
 	console.log("err:3232:", err);
 }
