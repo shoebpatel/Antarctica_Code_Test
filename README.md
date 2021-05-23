@@ -33,22 +33,23 @@ Folder Structure:
  - serves the static routes index.html & login.html which does not requires authorization for access
 
 
-Process:
-- used vanilla JavaScript for rendering & Bootstrap for UI creation
+Process Design Used:
+- vanilla JavaScript for rendering & Bootstrap for UI creation
 
-- used atlas mongoDB online NoSQL database cluster for storing the data
+- atlas mongoDB online NoSQL database cluster for storing the data
 
-- created 2 collections(users & employees) with references of ObjectId in both collection
+- created 2 collections(users & employees) with references of ObjectId in both collection for joins
 
-- used mongoose ODM for connection & manipulation of documents
-- have used mongoDB transaction So, in case something goes bad then the transaction will rollback this ensures ACID (Implemented while creating the user).
+- mongoose ODM for connection & manipulation of documents
 
-- used Joi validator to validate incoming data
+- mongoDB transactions, if in case something goes bad then the transaction will rollback this will ensure ACID (Implemented while creating the user)
 
-- used JWT(JSON web token) for Authorization on private routes
-- once the user logged-in the token is generated at backend and saved on user's browser(local storage)
-  & on every subsequent request this token is send back to the server & verified.
-  If the token is not valid or tempered the user will rerouted back to the login page (Implemented Authorization middleware in express).
+- Joi validator to validate incoming data
+
+- JWT(JSON web token) for Authorization on private routes
+  - once the user logged-in the token is generated at backend and saved on user's browser(local storage)
+    & on every subsequent request this token is send back to the server & verified.
+    If the token is not valid or tempered the user will rerouted back to the login page (Implemented Authorization middleware in express).
 
 - deployed on heroku, with auto deploy web hook on push from github to heroku
 
