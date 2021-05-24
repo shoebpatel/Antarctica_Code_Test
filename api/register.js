@@ -35,7 +35,6 @@ module.exports = async (req, res) => {
 			.max(30)
 			.required(),
 		employeeID: Joi.number()
-			.min(3)
 			.required(),
 		organizationName: Joi.string()
 			.min(3)
