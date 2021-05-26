@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema(
 
 const EmployeeSchema = new mongoose.Schema(
 	{
-		employeeID: { type: Number, required: true, unique: true },
+		employeeID: { type: String, required: true, unique: true },
 		firstName: { type: String, required: true },
 		lastName: { type: String, required: true },
 		organizationName: { type: String, required: true },

@@ -34,8 +34,8 @@ module.exports = async (req, res) => {
 			.min(3)
 			.max(30)
 			.required(),
-		employeeID: Joi.number()
-			.required(),
+		employeeID: Joi.string()
+		.pattern(new RegExp('^[A-Z0-9]{3,30}$')).required(),
 		organizationName: Joi.string()
 			.min(3)
 			.max(30)

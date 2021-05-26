@@ -19,7 +19,8 @@ module.exports = async (req, res) => {
 	const schema = Joi.object({
 		firstName: Joi.string().alphanum(),
 		lastName: Joi.string().alphanum(),
-		employeeID: Joi.number()
+		employeeID: Joi.string()
+		.pattern(new RegExp('^[A-Z0-9]{3,30}$')).required()
 	}).or('firstName', 'lastName', 'employeeID');
 
 	const {
