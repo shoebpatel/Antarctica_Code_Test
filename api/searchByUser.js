@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
 		firstName: Joi.string().alphanum(),
 		lastName: Joi.string().alphanum(),
 		employeeID: Joi.string()
-		.pattern(new RegExp('^[A-Z0-9]{3,30}$')).required()
+		.pattern(new RegExp('^[A-Z0-9]{3,30}$'))
 	}).or('firstName', 'lastName', 'employeeID');
 
 	const {
