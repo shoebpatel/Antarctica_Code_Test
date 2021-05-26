@@ -50,6 +50,7 @@ module.exports = async (req, res) => {
 	const endIndex = page * limit
 
 	const totalPages = await Employee.countDocuments().exec();
+	console.log('totalPages: ', totalPages);
 	const results = {};
 
 	if (endIndex < totalPages) {
@@ -112,7 +113,7 @@ module.exports = async (req, res) => {
 			})
 		}
 		
-		results.totalPages = Math.round(totalPages / limit);
+		results.totalPages = Math.ceil(totalPages / limit);
 		
 		console.log('results: ', results);
 		
